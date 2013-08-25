@@ -16,7 +16,7 @@
 		<input type="button" id="sendButton" value="Send"></input>
 
 		<script type="text/javascript">
-				
+			var socket
 
 			function refreshAllMessages (response) {
 				var div = document.getElementById("messages");
@@ -60,7 +60,7 @@
 				document.getElementById("sendButton").onclick = onSendButtonClick;
 				document.getElementById("text").onkeypress = onTextInputKeyPress;
 
-				var socket = io.connect(window.location.hostname);
+				socket = io.connect(window.location.hostname);
 				socket.on('connect', function (data) {
 					document.getElementById("debug").innerHTML = "connected";
 				});
