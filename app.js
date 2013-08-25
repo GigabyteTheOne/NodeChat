@@ -45,9 +45,9 @@ chat.addMessage({
 
 var io = socketio.listen(server);
 
-io.configure(function () {                //Added
-  io.set('transports', ['xhr-polling']);  //Added
-});                                       //Added
+io.configure(function () {
+  io.set('transports', ['xhr-polling']);
+});
 
 io.sockets.on('connection', function (socket) {
 	console.log("connected!");
