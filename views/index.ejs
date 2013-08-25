@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Test chat</title>
+		<!-- <link rel="stylesheet" href="/vendor/bower_components/bootstrap/dist/css/bootstrap.css"/>
+		<link rel="stylesheet" href="/vendor/bower_components/bootstrap/dist/js/bootstrap.js"/>
+		<link rel='stylesheet' href='/css/app.css'> -->
+		<script src="/socket.io/socket.io.js"></script>
+		<script src="moment.min.js"></script>
+	</head>
+	<body>
+		<div id="debug"></div>
+		<!-- <div id="app">Загружаю...</div> -->
+		<div id="messages" style="border: 1px solid; height: 300px;">Loading...</div>
+		<input type="text" id="text"></input>
+		<input type="button" id="sendButton" value="Send"></input>
+
+		<script type="text/javascript">
+				
+
+			function refreshAllMessages (response) {
+				var div = document.getElementById("messages");
+				div.innerHTML = "";
+				for (var messageIndex in response) {
+					var message = response[messageIndex];
+					addNewMessage(message);
+				};
+			}
+
+			function addNewMessage (message) {
+				var div = document.getElementById("messages");
+				var messageContainer = document.createElement("p");
+
+				var date = new Date(message.time);
+				messageContainer.innerHTML = "(" + moment(date).format("HH:mm:ss") + ") " + message.user + " : " + message.text;
+
+				div.appendChild(messageContainer);
+			}
+
+			function onSendButtonClick (event) {
+				sendMessage();
+			}
+
+			function onTextInputKeyPress (event) {
+				if (event.which == 13) {
+					sendMessage();
+				}
+			}
+
+			function sendMessage () {
+				var text = document.getElementById("text").value;
+				socket.send(JSON.stringify({
+					"type": "message",
+					"data": text
+				}));
+				document.getElementById("text").value = "";
+			}
+
+			window.onload = function () {
+				document.getElementById("sendButton").onclick = onSendButtonClick;
+				document.getElementById("text").onkeypress = onTextInputKeyPress;
+
+				var socket = io.connect(window.location.hostname);
+				socket.on('connect', function (data) {
+					document.getElementById("debug").innerHTML = "connected";
+				});
+				socket.on('disconnect', function() {
+					document.getElementById("debug").innerHTML = "disconnected";
+				});
+
+				socket.on("message", function (data) {
+					switch (data.event) {
+						case "allMessages":
+							refreshAllMessages(data.response)
+							break;
+						case "newMessage":
+							addNewMessage(data.response)
+							break;
+						default:
+							console.log("Unknown message");
+							break;
+					}
+				});
+			};
+		</script>
+	</body>
+</html>
