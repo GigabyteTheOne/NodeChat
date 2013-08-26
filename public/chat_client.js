@@ -94,8 +94,26 @@ ChatClient.prototype.refreshAllMessages = function (response) {
 ChatClient.prototype.addNewMessage = function (message) {
 	var messageContainer = document.createElement("p");
 
+	var avatarImage = document.createElement("img");
+	messageContainer.appendChild(avatarImage);
+
+	var timeContainer = document.createElement("span");
+	timeContainer.className = "label label-default";
 	var date = new Date(message.time);
-	messageContainer.innerHTML = "(" + moment(date).format("HH:mm:ss") + ") " + message.user + " : " + message.text;
+	timeContainer.innerText = moment(date).format("HH:mm:ss");
+	messageContainer.appendChild(timeContainer);
+
+	var userContainer = document.createElement("span");
+	userContainer.className = "label label-info";
+	userContainer.innerText = message.user;
+	userContainer.style.marginLeft = "8px";
+	messageContainer.appendChild(userContainer);
+
+	var textContainer = document.createElement("span");
+	// textContainer.className = "label";
+	textContainer.innerText = message.text;
+	textContainer.style.marginLeft = "8px";
+	messageContainer.appendChild(textContainer);
 
 	this.messagesContainer.appendChild(messageContainer);
 };
