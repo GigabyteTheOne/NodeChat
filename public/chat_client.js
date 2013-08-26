@@ -16,22 +16,45 @@ ChatClient.prototype.render = function() {
 	this.debugContainer = document.createElement("div");
 	this.container.appendChild(this.debugContainer);
 	//Messages list
+	var panel = document.createElement("div");
+	panel.className = "panel panel-primary";
+
+	var panelHeader = document.createElement("div");
+	panelHeader.className = "panel-heading";
+	panelHeader.innerText = "Chat content";
+	panel.appendChild(panelHeader);
+
 	this.messagesContainer = document.createElement("div");
-	this.messagesContainer.style.borderWidth = "1px";
-	this.messagesContainer.style.borderStyle = "solid";
-	this.messagesContainer.style.height = "300px";
-	this.container.appendChild(this.messagesContainer);
+	// this.messagesContainer.style.borderWidth = "1px";
+	// this.messagesContainer.style.borderStyle = "solid";
+	this.messagesContainer.className = "panel-body";
+
+	panel.appendChild(this.messagesContainer);
+	// this.messagesContainer.style.height = "300px";
+	this.container.appendChild(panel);
+
+	var sendGroup = document.createElement("div");
+	sendGroup.className = "input-group";
+
 	//Message input
 	this.messageInput = document.createElement("input");
-	this.messageInput.type = "text";
+	this.messageInput.className = "form-control";
 	this.messageInput.onkeypress = this.onTextInputKeyPress.bind(this);
-	this.container.appendChild(this.messageInput);
+	sendGroup.appendChild(this.messageInput);
+
+	var buttonSpan = document.createElement("span");
+	buttonSpan.className = "input-group-btn";
+
 	//Send button
-	this.sendButton = document.createElement("input");
+	this.sendButton = document.createElement("button");
 	this.sendButton.type = "button";
-	this.sendButton.value = "Send";
+	this.sendButton.className = "btn btn-primary";
+	this.sendButton.innerHTML = "Send";
 	this.sendButton.onclick = this.onSendButtonClick.bind(this);
-	this.container.appendChild(this.sendButton);
+	buttonSpan.appendChild(this.sendButton);
+	sendGroup.appendChild(buttonSpan);
+	panel.appendChild(sendGroup);
+
 };
 
 ChatClient.prototype.start = function() {
@@ -97,19 +120,20 @@ ChatClient.prototype.sendMessage = function () {
 };
 
 ChatClient.prototype.debug = function(message, type) {
-	var p = document.createElement("p");
-	p.innerHTML = message;
+	var container = document.createElement("div");
+	container.innerText = message;
+	container.className = "alert";
 	switch (type) {
 		case DEBUG_TYPES.GOOD:
-			p.style.color = "#00FF00";
+			container.className += " alert-success";
 			break;
 		case DEBUG_TYPES.BAD:
-			p.style.color = "#FFFF00";
+			container.className += " alert-warning";
 			break;
 		case DEBUG_TYPES.ERROR:
-			p.style.color = "#FF0000";
+			container.className += " alert-danger";
 			break;
 	}
-	this.debugContainer.appendChild(p);
+	this.debugContainer.appendChild(container);
 };
 
